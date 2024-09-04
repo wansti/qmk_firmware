@@ -18,7 +18,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include QMK_KEYBOARD_H
 
+#define ANIM_LUNA
+
 #ifdef OLED_ENABLE
+
+#if defined ANIM_MUSIC_BARS
 
 #define ANIM_INVERT false
 #define ANIM_RENDER_WPM true
@@ -39,6 +43,24 @@ bool oled_task_user(void) {
   }
   return false;
 }
+#elif defined ANIM_LUNA
+
+#include "luna.c"
+
+oled_rotation_t oled_init_user(oled_rotation_t rotation) {
+  if (!is_keyboard_master()) {
+    return OLED_ROTATION_270;
+  }
+  return rotation;
+}
+
+bool oled_task_user(void) {
+  if (!is_keyboard_master()) {
+    render_luna(0,13);
+  }
+  return false;
+}
+#endif
 #endif
 
 

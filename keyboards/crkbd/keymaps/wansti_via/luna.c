@@ -153,3 +153,17 @@ void render_luna(int LUNA_X, int LUNA_Y) {
 }
 
 // KEYBOARD PET END
+
+oled_rotation_t oled_init_user(oled_rotation_t rotation) {
+    return OLED_ROTATION_270;
+}
+
+bool oled_task_user(void) {
+  if (!is_keyboard_master()) {
+    render_luna(0,13);
+  }
+  else {
+    print_logo_narrow();
+  }
+  return false;
+}

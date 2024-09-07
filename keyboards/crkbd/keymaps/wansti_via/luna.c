@@ -136,19 +136,20 @@ void render_luna(int LUNA_X, int LUNA_Y) {
         }
     }
 
-    // animation timer
-    if (timer_elapsed32(anim_timer_luna) > ANIM_FRAME_DURATION) {
-        anim_timer_luna       = timer_read32();
-        current_wpm_luna = get_current_wpm();
-        animation_phase();
-    }
-
-    // this fixes the screen on and off bug
-    if (current_wpm_luna > 0) {
-        oled_on();
-        anim_sleep = timer_read32();
-    } else if (timer_elapsed32(anim_sleep) > OLED_TIMEOUT) {
+#if OLED_TIMEOUT > 0
+    /* the animation prevents the normal timeout from occuring */
+    if (last_input_activity_elapsed() > OLED_TIMEOUT && last_led_activity_elapsed() > OLED_TIMEOUT) {
         oled_off();
+        return;
+    } else {
+        oled_on();
+    }
+#endif
+
+    /* animation timer */
+    if (timer_elapsed32(anim_timer_luna) > ANIM_FRAME_DURATION) {
+        anim_timer_luna = timer_read32();
+        animation_phase();
     }
 }
 
